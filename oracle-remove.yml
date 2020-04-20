@@ -1,0 +1,85 @@
+---
+- name: OCI Webserver Infrastructure
+  hosts: localhost
+  vars:
+    #compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
+    vcn_cidr_block: "10.0.0.0/16"
+    vcn_name: "WebsiteNetwork"
+    vcn_dns_label: "website"
+    subnet_dns_label: "webserver"
+    webserver_subnet_name: "webserver"
+    webserver_subnet_cidr: "10.0.0.0/24"
+    imagename: "oci_image_with_key"
+    #hostname: tomat
+  
+  tasks:
+  - name: Get webserver1 facts
+    oci_instance_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}-webserver1"
+      lifecycle_state: "RUNNING"
+    register: instance_webserver1
+
+  - name: debug
+    debug:
+      msg: "{{ instance_webserver1 }}"
+
+  - name: Set Fact webserver1_private_ip fact
+    set_fact:
+      webserver1_private_ip: "{{ item.primary_private_ip }}"
+    loop: "{{ instance_webserver1.instances }}"
+
+  - name: Get webserver2 facts
+    oci_instance_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}-webserver2"
+      lifecycle_state: "RUNNING"
+    register: instance_webserver2
+
+  - name: Set Fact webserver2_private_ip fact
+    set_fact:
+      webserver2_private_ip: "{{ item.primary_private_ip }}"
+    loop: "{{ instance_webserver2.instances }}"
+  - name: Terminate/delete an instance
+    oci_instance:
+       id: "ocid1.instance.oc1.phx.xxxxxEXAMPLExxxxx...lxiggdq"
+       state: "absent"
+
+
+#  - name: Create Webserver1
+#    oci_instance:
+#      name: "{{ hostname }}-webserver1"
+#      availability_domain: "{{ adfact.availability_domains[0].name }}"
+#      fault_domain: "FAULT-DOMAIN-2"
+#      compartment_id: "{{ compartmentid }}"
+#      shape: "VM.Standard.E2.1"
+#      freeform_tags:
+#         ansible: "website"
+#      source_details:
+#         source_type: image
+#         image_id: "{{ image.images[0].id }}"
+#      vnic:
+#         hostname_label: "{{ hostname }}-webserver1"
+#         assign_public_ip: true
+#         subnet_id: "{{ subnet_id }}"
+#    register: webserver1
+
+#  - name: Create Webserver2
+#    oci_instance:
+#      name: "{{ hostname }}-webserver2"
+#      availability_domain: "{{ adfact.availability_domains[1].name }}"
+#      fault_domain: "FAULT-DOMAIN-2"
+#      compartment_id: "{{ compartmentid }}"
+#      shape: "VM.Standard.E2.1"
+#      freeform_tags:
+#         ansible: "website"
+#      source_details:
+#         source_type: image
+#         image_id: "{{ image.images[0].id }}"
+#      vnic:
+#         hostname_label: "{{ hostname }}-webserver"
+#         assign_public_ip: true
+#         subnet_id: "{{ subnet_id }}"
+#    register: webserver2
+
+
