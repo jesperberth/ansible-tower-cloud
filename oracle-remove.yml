@@ -20,15 +20,6 @@
       lifecycle_state: "RUNNING"
     register: instance_webserver1
 
-  - name: debug
-    debug:
-      msg: "{{ instance_webserver1.instances[0].id }}"
-
-  - name: Set Fact webserver1_private_ip fact
-    set_fact:
-      webserver1_private_ip: "{{ item.primary_private_ip }}"
-    loop: "{{ instance_webserver1.instances }}"
-
   - name: Get webserver2 facts
     oci_instance_facts:
       compartment_id: "{{ compartmentid }}"
@@ -36,51 +27,40 @@
       lifecycle_state: "RUNNING"
     register: instance_webserver2
 
-  - name: Set Fact webserver2_private_ip fact
-    set_fact:
-      webserver2_private_ip: "{{ item.primary_private_ip }}"
-    loop: "{{ instance_webserver2.instances }}"
-
-  - name: Terminate/delete an instance
+  - name: Terminate Webserver1
     oci_instance:
-       id: "ocid1.instance.oc1.phx.xxxxxEXAMPLExxxxx...lxiggdq"
+       id: "{{ instance_webserver1.instances[0].id }}"
        state: "absent"
 
+  - name: Terminate Webserver2
+    oci_instance:
+       id: "{{ instance_webserver2.instances[0].id }}"
+       state: "absent"
 
-#  - name: Create Webserver1
-#    oci_instance:
-#      name: "{{ hostname }}-webserver1"
-#      availability_domain: "{{ adfact.availability_domains[0].name }}"
-#      fault_domain: "FAULT-DOMAIN-2"
-#      compartment_id: "{{ compartmentid }}"
-#      shape: "VM.Standard.E2.1"
-#      freeform_tags:
-#         ansible: "website"
-#      source_details:
-#         source_type: image
-#         image_id: "{{ image.images[0].id }}"
-#      vnic:
-#         hostname_label: "{{ hostname }}-webserver1"
-#         assign_public_ip: true
-#         subnet_id: "{{ subnet_id }}"
-#    register: webserver1
+  - name: Load Balancer Facts
+    oci_load_balancer_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}-website_lb"
+    register: lb
+  
+  - name: Set Fact lb_ip fact
+    set_fact:
+      lb_public_ip: "{{ item.ip_addresses }}"
+    loop: "{{ lb.load_balancers }}"
 
-#  - name: Create Webserver2
-#    oci_instance:
-#      name: "{{ hostname }}-webserver2"
-#      availability_domain: "{{ adfact.availability_domains[1].name }}"
-#      fault_domain: "FAULT-DOMAIN-2"
-#      compartment_id: "{{ compartmentid }}"
-#      shape: "VM.Standard.E2.1"
-#      freeform_tags:
-#         ansible: "website"
-#      source_details:
-#         source_type: image
-#         image_id: "{{ image.images[0].id }}"
-#      vnic:
-#         hostname_label: "{{ hostname }}-webserver"
-#         assign_public_ip: true
-#         subnet_id: "{{ subnet_id }}"
-#    register: webserver2
+  - name: Set Fact loadbalancer_ip fact
+    set_fact:
+      loadbalancer_public_ip: "{{ item.ip_address }}"
+    loop: "{{ lb_public_ip }}"
 
-
+  - name: Add zone record for loadbalancer
+    oci_zone_records:
+      name: "{{ tld }}"
+      patch_items: [{
+                      domain: "{{ hostname }}.{{ tld }}",
+                      is_protected: false,
+                      rdata: "{{ loadbalancer_public_ip }}",
+                      rtype: "A",
+                      ttl: 3600,
+                      operation: "REMOVE"
+                      }]
