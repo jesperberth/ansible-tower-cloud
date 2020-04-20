@@ -67,11 +67,13 @@
                       ttl: 3600,
                       operation: "REMOVE"
                       }]
+    ignore_errors: yes
 
   - name: Delete Load Balancer
     oci_load_balancer:
       load_balancer_id: "{{ lb.load_balancers[0].id }}"
       state: absent
+    ignore_errors: yes
 
   - name: Get VCN
     oci_vcn_facts:
