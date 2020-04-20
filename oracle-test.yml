@@ -1,5 +1,5 @@
 ---
-- name: OCI Webserver Infrastructure
+- name: OCI Test Connectivity
   hosts: localhost
   vars:
     compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
