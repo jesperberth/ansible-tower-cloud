@@ -17,14 +17,14 @@
     oci_instance_facts:
       compartment_id: "{{ compartmentid }}"
       display_name: "{{ hostname }}-webserver1"
-      lifecycle_state: "RUNNING"
+      #lifecycle_state: "RUNNING"
     register: instance_webserver1
 
   - name: Get webserver2 facts
     oci_instance_facts:
       compartment_id: "{{ compartmentid }}"
       display_name: "{{ hostname }}-webserver2"
-      lifecycle_state: "RUNNING"
+      #lifecycle_state: "RUNNING"
     register: instance_webserver2
 
   - name: Terminate Webserver1
