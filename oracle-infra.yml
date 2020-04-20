@@ -34,11 +34,7 @@
       name: "web_inetgw"
       enabled: 'yes'
       state: 'present'
-    register: inetgwresult
-
-  - name: Set fact internet gateway id
-    set_fact:
-      inet_gw_id: "{{ inetgwresult.internet_gateway.id }}"
+    register: inetgw
 
   - name: Create a Route Table in VCN
     oci_route_table:
@@ -47,7 +43,7 @@
       route_rules:
           - destination: "0.0.0.0/0"
             destination_type: "CIDR_BLOCK"
-            network_entity_id: "{{ inet_gw_id }}"
+            network_entity_id: "{{ inetgw.internet_gateways[0].id }}"
       state: 'present'
 
   - name: Update security list with http
