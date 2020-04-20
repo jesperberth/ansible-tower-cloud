@@ -2,9 +2,9 @@
 - name: OCI Zone Record
   hosts: localhost
   vars:
-    compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
-    hostname: "tomat"
-    tld: "oci.arrowdemo.dk"
+    #compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
+    #hostname: "tomat"
+    #tld: "oci.arrowdemo.dk"
 
   tasks:
   - name: Load Balancer Facts
