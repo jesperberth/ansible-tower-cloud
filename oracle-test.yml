@@ -1,0 +1,10 @@
+---
+- name: OCI Webserver Infrastructure
+  hosts: localhost
+  vars:
+    compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
+      
+  tasks:
+  - name: Create a VCN
+    oci_region_facts:
+     
