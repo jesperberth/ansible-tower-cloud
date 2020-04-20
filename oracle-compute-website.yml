@@ -1,0 +1,14 @@
+---
+- name: OCI Webserver Compute Website
+  hosts: tag_ansible=website
+  become: yes
+  user: opc
+
+  vars:
+    gitrepo: https://github.com/jesperberth/tomato-monkey.git
+    
+  tasks:
+  - name: Wait for connection
+    git:
+      repo: "{{ gitrepo }}"
+      dest: "/var/www/html"

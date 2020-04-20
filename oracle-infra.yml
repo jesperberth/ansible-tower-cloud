@@ -1,0 +1,131 @@
+---
+- name: OCI Webserver Infrastructure
+  hosts: localhost
+  vars:
+    compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
+    vcn_cidr_block: "10.0.0.0/16"
+    vcn_name: "WebsiteNetwork"
+    vcn_dns_label: "website"
+    subnet_dns_label: "webserver"
+    webserver_subnet_name: "webserver"
+    webserver_subnet_cidr: "10.0.0.0/24"
+    imagename: "oci_image_with_key"
+    hostname: tomat
+  
+  tasks:
+  - name: Create a VCN
+    oci_vcn:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}_{{ vcn_name }}"
+      cidr_block: "{{ vcn_cidr_block }}"
+      dns_label: "{{ vcn_dns_label }}"
+    register: vcnresult
+
+  - name: Set fact VCN
+    set_fact:
+      vcn_id: "{{ vcnresult.vcn.id }}"
+      default_route_table_id: "{{ vcnresult.vcn.default_route_table_id }}"
+      default_security_list_id: "{{ vcnresult.vcn.default_security_list_id }}"
+
+  - name : Create a Internet Gateway in VCN
+    oci_internet_gateway:
+      compartment_id: "{{ compartmentid }}"
+      vcn_id: "{{ vcnresult.vcn.id }}"
+      name: "web_inetgw"
+      enabled: 'yes'
+      state: 'present'
+    register: inetgwresult
+
+  - name: Set fact internet gateway id
+    set_fact:
+      inet_gw_id: "{{ inetgwresult.internet_gateway.id }}"
+
+  - name: Create a Route Table in VCN
+    oci_route_table:
+      rt_id: "{{ default_route_table_id }}"
+      display_name: "webserver default route table"
+      route_rules:
+          - destination: "0.0.0.0/0"
+            destination_type: "CIDR_BLOCK"
+            network_entity_id: "{{ inet_gw_id }}"
+      state: 'present'
+
+  - name: Update security list with http
+    oci_security_list:
+      security_list_id: "{{ default_security_list_id }}"
+      ingress_security_rules:
+          - source: '0.0.0.0/0'
+            is_stateless: False
+            protocol: '6'
+            tcp_options:
+                destination_port_range:
+                   min: 80
+                   max: 80
+      purge_security_rules: no             
+      state: "present"
+
+  - name: Create a webserver subnet in VCN
+    oci_subnet:
+      display_name: "{{ webserver_subnet_name }}"
+      cidr_block: "{{ webserver_subnet_cidr }}"
+      compartment_id: "{{ compartmentid }}"
+      vcn_id: "{{ vcn_id }}"
+      dns_label: "{{ subnet_dns_label }}"
+    register: subnetresult
+
+  - name: Set fact subnet_id  
+    set_fact:
+      subnet_id: "{{ subnetresult.subnet.id }}"
+
+  - name: List images
+    oci_image_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ imagename }}"
+    register: image
+
+  - name: Get Availability Domain
+    oci_ad_facts:
+      compartment_id: "{{ compartmentid }}"
+    register: adfact
+  
+  - name: Create Webserver1
+    oci_instance:
+      name: "{{ hostname }}-webserver1"
+      availability_domain: "{{ adfact.availability_domains[0].name }}"
+      fault_domain: "FAULT-DOMAIN-2"
+      compartment_id: "{{ compartmentid }}"
+      shape: "VM.Standard.E2.1"
+      freeform_tags:
+         ansible: "website"
+      source_details:
+         source_type: image
+         image_id: "{{ image.images[0].id }}"
+      vnic:
+         hostname_label: "{{ hostname }}-webserver1"
+         assign_public_ip: true
+         subnet_id: "{{ subnet_id }}"
+    register: webserver1
+
+  - name: Create Webserver2
+    oci_instance:
+      name: "{{ hostname }}-webserver2"
+      availability_domain: "{{ adfact.availability_domains[1].name }}"
+      fault_domain: "FAULT-DOMAIN-2"
+      compartment_id: "{{ compartmentid }}"
+      shape: "VM.Standard.E2.1"
+      freeform_tags:
+         ansible: "website"
+      source_details:
+         source_type: image
+         image_id: "{{ image.images[0].id }}"
+      vnic:
+         hostname_label: "{{ hostname }}-webserver"
+         assign_public_ip: true
+         subnet_id: "{{ subnet_id }}"
+    register: webserver2
+
+  - name: Add webserver1 to ssh known_hosts
+    shell: "ssh-keyscan -t ecdsa {{ webserver1.instance.primary_public_ip }}  >> /home/jesbe/.ssh/known_hosts"
+
+  - name: Add webserver2 to ssh known_hosts
+    shell: "ssh-keyscan -t ecdsa {{ webserver2.instance.primary_public_ip }}  >> /home/jesbe/.ssh/known_hosts"

@@ -1,0 +1,124 @@
+---
+- name: OCI Webserver Loadbalancer
+  hosts: localhost
+  vars:
+    compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
+    vcn_cidr_block: "10.0.0.0/16"
+    vcn_name: "WebsiteNetwork"
+    vcn_dns_label: "website"
+    subnet_dns_label: "webserver"
+    webserver_subnet_name: "webserver"
+    webserver_subnet_cidr: "10.0.0.0/24"
+    imagename: "oci_image_with_key"
+    hostname: tomat
+    
+  tasks:
+  - name: Get webserver1 facts
+    oci_instance_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}-webserver1"
+      lifecycle_state: "RUNNING"
+    register: instance_webserver1
+
+  - name: Set Fact webserver1_private_ip fact
+    set_fact:
+      webserver1_private_ip: "{{ item.primary_private_ip }}"
+    loop: "{{ instance_webserver1.instances }}"
+
+  - name: Get webserver2 facts
+    oci_instance_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}-webserver2"
+      lifecycle_state: "RUNNING"
+    register: instance_webserver2
+
+  - name: Set Fact webserver2_private_ip fact
+    set_fact:
+      webserver2_private_ip: "{{ item.primary_private_ip }}"
+    loop: "{{ instance_webserver2.instances }}"
+
+  - name: Get VCN
+    oci_vcn_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}_{{ vcn_name }}"
+    register: vcn
+  
+  - name: debug
+    debug:
+      msg: "{{ vcn.vcns[0].id }}"
+
+  - name: Get Webserver subnet
+    oci_subnet_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ webserver_subnet_name }}"
+      vcn_id: "{{ vcn.vcns[0].id }}"
+    register: subnet
+
+  - name: debug
+    debug:
+      msg: "{{ subnet.subnets[0].id }}"
+
+  - name: Create Load Balancer
+    oci_load_balancer:
+      compartment_id: "{{ compartmentid }}"
+      name: "{{ hostname }}-website_lb"
+      shape_name: "100Mbps"
+      subnet_ids:
+          - "{{ subnet.subnets[0].id }}"
+      state: 'present'
+    register: loadbalancer
+
+  - name: Create Load Balancer Backend Set
+    oci_load_balancer_backend_set:
+      name: "website_lb_backend_set"
+      load_balancer_id: "{{ loadbalancer.load_balancer.id }}"
+      health_checker:
+            interval_in_millis: 5000
+            port: 80
+            protocol: "HTTP"
+            retries: 2
+            timeout_in_millis: 3000
+            return_code: 200
+            url_path: "/healthcheck"
+      policy: "WEIGHTED_ROUND_ROBIN"
+      state: 'present'
+
+  - name: Create Load Balancer Backend for webserver1
+    oci_load_balancer_backend:
+      load_balancer_id: "{{ loadbalancer.load_balancer.id }}"
+      backend_set_name: "website_lb_backend_set"
+      ip_address: "{{ webserver1_private_ip }}"
+      port: 80
+      backup: False
+      drain: False
+      offline: False
+      weight: 1
+      state: 'present'
+  
+  - name: Create Load Balancer Backend for webserver2
+    oci_load_balancer_backend:
+      load_balancer_id: "{{ loadbalancer.load_balancer.id }}"
+      backend_set_name: "website_lb_backend_set"
+      ip_address:  "{{ webserver2_private_ip }}"
+      port: 80
+      backup: False
+      drain: False
+      offline: False
+      weight: 1
+      state: 'present'
+
+  - name: Create Listener for loadbalancer
+    oci_load_balancer_listener:
+      load_balancer_id: "{{ loadbalancer.load_balancer.id }}"
+      name: "website_lb_listener"
+      default_backend_set_name: "website_lb_backend_set"
+      protocol: "HTTP"
+      port: 80
+      connection_configuration:
+          idle_timeout: 1200
+      state: 'present'
+
+  - name: Set Stats loadbalancer_id
+    set_stats:
+      data:
+       loadbalancer_id: "{{ loadbalancer.load_balancer.id }}"
