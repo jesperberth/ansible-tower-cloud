@@ -100,9 +100,14 @@
       vcn_id: "{{ vcn.vcns[0].id }}"
     register: inetgw
 
-  - name: Delete Route Table
+  - name: Create a Route Table in VCN
     oci_route_table:
-      rt_id: "{{ rt.route_tables[0].id }}"
+      rt_id: "{{ default_route_table_id }}"
+      display_name: "webserver default route table"
+      route_rules:
+          - destination: "0.0.0.0/0"
+            destination_type: "CIDR_BLOCK"
+            network_entity_id: "{{ rt.route_tables[0].id }}"
       state: absent
 
   - name : Delete Internet Gateway
