@@ -88,17 +88,31 @@
       vcn_id: "{{ vcn.vcns[0].id }}"
     register: subnet
 
+  - name: Get Internet Gateway
+    oci_internet_gateway_facts:
+      compartment_id: "{{ compartmentid }}"
+      vcn_id: "{{ vcn.vcns[0].id }}"
+    register: inetgw
+
+  - name : Delete Internet Gateway
+    oci_internet_gateway:
+      id: "{{ inetgw.internet_gateways[0].id }}"
+      state: absent
+    ignore_errors: yes
+
   - name: debug
     debug:
-      msg: "{{ subnet.subnets[0].id }}"
+      msg: "{{ inetgw }}"
 
   - name: Delete subnet
     oci_subnet:
       subnet_id: "{{ subnet.subnets[0].id }}"
       state: absent
+    ignore_errors: yes
 
   - name: Delete vcn
     oci_vcn:
       vcn_id: "{{ vcn.vcns[0].id }}"
       state: absent
+    ignore_errors: yes
 
