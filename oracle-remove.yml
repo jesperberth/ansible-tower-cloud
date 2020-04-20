@@ -53,7 +53,7 @@
       loadbalancer_public_ip: "{{ item.ip_address }}"
     loop: "{{ lb_public_ip }}"
 
-  - name: Add zone record for loadbalancer
+  - name: Remove zone record for loadbalancer
     oci_zone_records:
       name: "{{ tld }}"
       patch_items: [{
@@ -64,3 +64,7 @@
                       ttl: 3600,
                       operation: "REMOVE"
                       }]
+
+  - name: debug
+    debug:
+      msg: "{{ lb.load_balancers[0].id }}"
