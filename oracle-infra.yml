@@ -2,7 +2,7 @@
 - name: OCI Webserver Infrastructure
   hosts: localhost
   vars:
-    compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
+    #compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
     vcn_cidr_block: "10.0.0.0/16"
     vcn_name: "WebsiteNetwork"
     vcn_dns_label: "website"
@@ -10,7 +10,7 @@
     webserver_subnet_name: "webserver"
     webserver_subnet_cidr: "10.0.0.0/24"
     imagename: "oci_image_with_key"
-    hostname: tomat
+    #hostname: tomat
   
   tasks:
   - name: Create a VCN
