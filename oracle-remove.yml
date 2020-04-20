@@ -22,7 +22,7 @@
 
   - name: debug
     debug:
-      msg: "{{ instance_webserver1.id }}"
+      msg: "{{ instance_webserver1.instances[0].id }}"
 
   - name: Set Fact webserver1_private_ip fact
     set_fact:
@@ -40,7 +40,7 @@
     set_fact:
       webserver2_private_ip: "{{ item.primary_private_ip }}"
     loop: "{{ instance_webserver2.instances }}"
-    
+
   - name: Terminate/delete an instance
     oci_instance:
        id: "ocid1.instance.oc1.phx.xxxxxEXAMPLExxxxx...lxiggdq"
