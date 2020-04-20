@@ -68,3 +68,23 @@
   - name: debug
     debug:
       msg: "{{ lb.load_balancers[0].id }}"
+
+  - name: Delete Load Balancer
+    oci_load_balancer:
+      load_balancer_id: "{{ lb.load_balancers[0].id }}"
+      state: absent
+
+  - name: Get VCN
+    oci_vcn_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ hostname }}_{{ vcn_name }}"
+    register: vcn
+
+  - name: debug
+    debug:
+      msg: "{{ vcn.vcns[0].id }}"
+
+  - name: Delete vcn
+    oci_vcn:
+      vcn_id: "{{ vcn.vcns[0].id }}"
+      state: absent
