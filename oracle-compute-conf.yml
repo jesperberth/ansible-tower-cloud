@@ -7,11 +7,10 @@
   vars:
     
   tasks:
-#  - name: Wait for connection
-#    wait_for_connection:
-#      delay: 120
-#      sleep: 10
-#      timeout: 600
+  - name: Wait for connection
+    wait_for_connection:
+      sleep: 5
+      timeout: 600
   
   - name: Install httpd
     yum:
