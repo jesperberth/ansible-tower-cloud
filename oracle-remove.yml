@@ -65,10 +65,6 @@
                       operation: "REMOVE"
                       }]
 
-  - name: debug
-    debug:
-      msg: "{{ lb.load_balancers[0].id }}"
-
   - name: Delete Load Balancer
     oci_load_balancer:
       load_balancer_id: "{{ lb.load_balancers[0].id }}"
@@ -80,11 +76,24 @@
       display_name: "{{ hostname }}_{{ vcn_name }}"
     register: vcn
 
+  - name: Get Webserver subnet
+    oci_subnet_facts:
+      compartment_id: "{{ compartmentid }}"
+      display_name: "{{ webserver_subnet_name }}"
+      vcn_id: "{{ vcn.vcns[0].id }}"
+    register: subnet
+
   - name: debug
     debug:
-      msg: "{{ vcn.vcns[0].id }}"
+      msg: "{{ subnet.subnets[0].id }}"
+
+  - name: Delete subnet
+    oci_subnet:
+      subnet_id: "{{ subnet.subnets[0].id }}"
+      state: absent
 
   - name: Delete vcn
     oci_vcn:
       vcn_id: "{{ vcn.vcns[0].id }}"
       state: absent
+
