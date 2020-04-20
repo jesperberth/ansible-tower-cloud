@@ -81,6 +81,12 @@
       display_name: "{{ hostname }}_{{ vcn_name }}"
     register: vcn
 
+  - name: List Route Table
+    oci_route_table_facts:
+      compartment_id: "{{ compartmentid }}"
+      vcn_id: "{{ vcn.vcns[0].id }}"
+    register: rt
+
   - name: Get Webserver subnet
     oci_subnet_facts:
       compartment_id: "{{ compartmentid }}"
@@ -93,6 +99,11 @@
       compartment_id: "{{ compartmentid }}"
       vcn_id: "{{ vcn.vcns[0].id }}"
     register: inetgw
+
+  - name: Delete Route Table
+    oci_route_table:
+      rt_id: "{{ rt.route_tables[0].id }}"
+      state: absent
 
   - name : Delete Internet Gateway
     oci_internet_gateway:
