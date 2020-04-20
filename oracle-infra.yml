@@ -124,8 +124,8 @@
          subnet_id: "{{ subnet_id }}"
     register: webserver2
 
-  - name: Add webserver1 to ssh known_hosts
-    shell: "ssh-keyscan -t ecdsa {{ webserver1.instance.primary_public_ip }}  >> /home/jesbe/.ssh/known_hosts"
+#  - name: Add webserver1 to ssh known_hosts
+#    shell: "ssh-keyscan -t ecdsa {{ webserver1.instance.primary_public_ip }}  >> /home/jesbe/.ssh/known_hosts"
 
-  - name: Add webserver2 to ssh known_hosts
-    shell: "ssh-keyscan -t ecdsa {{ webserver2.instance.primary_public_ip }}  >> /home/jesbe/.ssh/known_hosts"
+#  - name: Add webserver2 to ssh known_hosts
+#    shell: "ssh-keyscan -t ecdsa {{ webserver2.instance.primary_public_ip }}  >> /home/jesbe/.ssh/known_hosts"
