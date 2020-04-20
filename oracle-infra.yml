@@ -141,11 +141,11 @@
          assign_public_ip: true
          subnet_id: "{{ subnet_id }}"
     loop:
-       - webserver1
-       - webserver2
+       - "webserver1"
+       - "webserver2"
     async: 1000
     poll: 0
-    register: Create_vm
+    register: create_vm
 
   - name: Wait for Virtual Machines
     async_status:
