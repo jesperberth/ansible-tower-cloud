@@ -18,6 +18,7 @@
       compartment_id: "{{ compartmentid }}"
       display_name: "{{ hostname }}-webserver1"
       #lifecycle_state: "RUNNING"
+    ignore_errors: yes
     register: instance_webserver1
 
   - name: Get webserver2 facts
@@ -25,17 +26,20 @@
       compartment_id: "{{ compartmentid }}"
       display_name: "{{ hostname }}-webserver2"
       #lifecycle_state: "RUNNING"
+    ignore_errors: yes
     register: instance_webserver2
 
   - name: Terminate Webserver1
     oci_instance:
        id: "{{ instance_webserver1.instances[0].id }}"
        state: "absent"
+    ignore_errors: yes
 
   - name: Terminate Webserver2
     oci_instance:
        id: "{{ instance_webserver2.instances[0].id }}"
        state: "absent"
+    ignore_errors: yes
 
   - name: Load Balancer Facts
     oci_load_balancer_facts:
