@@ -47,7 +47,7 @@
       route_rules:
           - destination: "0.0.0.0/0"
             destination_type: "CIDR_BLOCK"
-            network_entity_id: "{{ inetgw.internet_gateways[0].id }}"
+            network_entity_id: "{{ inetgw.internet_gateway.id }}"
       state: 'present'
 
   - name: Update security list with http
