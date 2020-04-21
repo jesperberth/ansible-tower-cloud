@@ -1,5 +1,5 @@
 ---
-- name: OCI Webserver Infrastructure
+- name: OCI Remove Webserver Infrastructure
   hosts: localhost
   vars:
     #compartmentid: "ocid1.compartment.oc1..aaaaaaaapajmuwmqujw2ztssdciccvmjtcyjnaj2ftl62rsohhydoq7qlxza"
@@ -83,12 +83,14 @@
     oci_vcn_facts:
       compartment_id: "{{ compartmentid }}"
       display_name: "{{ hostname }}_{{ vcn_name }}"
+    ignore_errors: yes
     register: vcn
 
   - name: List Route Table
     oci_route_table_facts:
       compartment_id: "{{ compartmentid }}"
       vcn_id: "{{ vcn.vcns[0].id }}"
+    ignore_errors: yes
     register: rt
 
   - name: Get Webserver subnet
@@ -96,12 +98,14 @@
       compartment_id: "{{ compartmentid }}"
       display_name: "{{ webserver_subnet_name }}"
       vcn_id: "{{ vcn.vcns[0].id }}"
+    ignore_errors: yes
     register: subnet
 
   - name: Get Internet Gateway
     oci_internet_gateway_facts:
       compartment_id: "{{ compartmentid }}"
       vcn_id: "{{ vcn.vcns[0].id }}"
+    ignore_errors: yes
     register: inetgw
 
   - name: Create a Route Table in VCN
@@ -113,6 +117,7 @@
             destination_type: "CIDR_BLOCK"
             network_entity_id: "{{ inetgw.internet_gateways[0].id }}"
       state: absent
+    ignore_errors: yes
 
   - name : Delete Internet Gateway
     oci_internet_gateway:
