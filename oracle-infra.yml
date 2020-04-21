@@ -36,6 +36,10 @@
       state: 'present'
     register: inetgw
 
+  - name: debug
+    debug:
+      msg: "{{ inetgw }}"
+
   - name: Create a Route Table in VCN
     oci_route_table:
       rt_id: "{{ default_route_table_id }}"
