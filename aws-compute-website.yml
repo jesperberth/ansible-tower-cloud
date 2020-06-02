@@ -4,8 +4,8 @@
   become: yes
   user: ec2-user
   vars:
-    ansible_ssh_private_key_file: ~/.ssh/ansible-key.pem
-    gitrepo: https://github.com/jesperberth/tomato-monkey.git
+    #ansible_ssh_private_key_file: ~/.ssh/ansible-key.pem
+    #gitrepo: https://github.com/jesperberth/tomato-monkey.git
   tasks:
   - name: Download Website from Github
     git:
