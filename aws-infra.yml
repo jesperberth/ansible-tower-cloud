@@ -1,0 +1,125 @@
+---
+- name: AWS Webserver Infrastructure
+  hosts: localhost
+  vars:
+    vpc_name: "webserver-vpc"
+    project_name: "ansible"
+    region: "eu-west-1"
+    cidr: "10.0.0.0/16"
+    cidr_public_a: "10.0.1.0/24"
+    cidr_public_b: "10.0.4.0/24"
+    zone1: "a"
+    zone2: "b"
+  
+  tasks:
+  - name: create VPC
+    ec2_vpc_net:
+      name: "{{ vpc_name }}"
+      cidr_block: "{{ cidr }}"
+      region: "{{ region }}"
+      state: present
+      tags:
+        project: "{{ project_name }}"
+    register: network      
+
+  - name: create subnet public_a
+    ec2_vpc_subnet:
+      region: "{{ region }}"
+      state: present
+      cidr: "{{ cidr_public_a }}"
+      az: "{{ region }}{{ zone1 }}"
+      vpc_id: "{{ network.vpc.id }}"
+      resource_tags:
+        project: "{{ project_name }}"
+        Name: "public_az_{{ zone1 }}"
+    register: subnetpublica
+
+  - name: create subnet public_b
+    ec2_vpc_subnet:
+      region: "{{ region }}"
+      state: present
+      cidr: "{{ cidr_public_b }}"
+      az: "{{ region }}{{ zone2 }}"
+      vpc_id: "{{ network.vpc.id }}"
+      resource_tags:
+        project: "{{ project_name }}"
+        Name: "public_az_{{ zone2 }}"
+    register: subnetpublicb
+
+  - name: vpc internet gateway
+    ec2_vpc_igw:
+      region: "{{ region }}"
+      vpc_id: "{{ network.vpc.id }}"
+      state: present
+      tags:
+        project: "{{ project_name }}"
+    register: igw
+
+  - name: Get Route table
+    ec2_vpc_route_table_info:
+      region: "{{ region }}"
+      filters:
+        vpc-id: "{{ network.vpc.id }}"
+    register: routea
+
+  - name: Setup route tables public az a
+    ec2_vpc_route_table:
+      region: "{{ region }}"
+      vpc_id: "{{ network.vpc.id }}"
+      lookup: id
+      purge_subnets: false
+      tags:
+        project: "{{ project_name }}"
+      route_table_id: "{{ routea.route_tables[0].id }}"
+      subnets: 
+        - "{{ subnetpublica.subnet.id }}"
+        - "{{ subnetpublicb.subnet.id }}"
+      routes:
+        - dest: 0.0.0.0/0
+          gateway_id: "{{ igw.gateway_id }}"
+
+  - name: Set Security Group for VPC
+    ec2_group:
+      name: default
+      description: default VPC security group
+      vpc_id: "{{ network.vpc.id }}"
+      region: "{{ region }}"
+      rules:
+        - proto: tcp
+          ports:
+          - 80
+          cidr_ip: 0.0.0.0/0
+          rule_desc: allow all http
+        - proto: tcp
+          ports:
+          - 22
+          cidr_ip: 0.0.0.0/0
+          rule_desc: allow all ssh
+
+  - name: Create Webserver1
+    ec2:
+      key_name: ansible-key
+      region: "{{ region }}"
+      instance_type: t2.micro
+      image: ami-04d5cc9b88f9d1d39
+      wait: yes
+      group: default
+      vpc_subnet_id: "{{ subnetpublica.subnet.id }}"
+      assign_public_ip: yes
+      instance_tags:
+        Name: webserver1
+        Ansible: webserver
+
+  - name: Create Webserver2
+    ec2:
+      key_name: ansible-key
+      region: "{{ region }}"
+      instance_type: t2.micro
+      image: ami-04d5cc9b88f9d1d39
+      wait: yes
+      group: default
+      vpc_subnet_id: "{{ subnetpublicb.subnet.id }}"
+      assign_public_ip: yes
+      instance_tags:
+        Name: webserver2
+        Ansible: webserver

@@ -1,0 +1,24 @@
+---
+- name: AWS Webserver Route53 Domain
+  hosts: localhost
+  vars:
+    domain: aws.arrowdemo.dk
+    hostname: tomat
+    region: "eu-west-1"
+  
+  tasks:
+  - name: Get ELB DNS info
+    elb_application_lb_info:
+      names: "webserverelb"
+      region: "{{ region }}"
+    register: elb
+
+  - name: Create Route53 record
+    route53:
+      state: present
+      zone: "{{ domain }}"
+      record: "{{ hostname }}.{{ domain }}"
+      type: A
+      value: "{{ elb.load_balancers[0].dns_name }}"
+      alias: True
+      alias_hosted_zone_id: "{{ elb.load_balancers[0].canonical_hosted_zone_id }}"
