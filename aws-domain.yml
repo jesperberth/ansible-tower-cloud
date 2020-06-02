@@ -2,8 +2,8 @@
 - name: AWS Webserver Route53 Domain
   hosts: localhost
   vars:
-    domain: aws.arrowdemo.dk
-    hostname: tomat
+    #domain: aws.arrowdemo.dk
+    #hostname: tomat
     region: "eu-west-1"
   
   tasks:
