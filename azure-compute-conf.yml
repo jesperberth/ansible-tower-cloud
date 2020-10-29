@@ -1,6 +1,6 @@
 ---
 - name: Azure Webserver Compute Configuration
-  hosts: tag_ansible_webserver
+  hosts: ansible_webserver
   become: yes
   user: jesbe
 
