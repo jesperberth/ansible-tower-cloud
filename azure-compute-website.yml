@@ -1,6 +1,6 @@
 ---
 - name: Azure Webserver Compute Website
-  hosts: ansible_webserver
+  hosts: Ansible_webserver
   become: yes
   user: jesbe
   vars:
