@@ -2,7 +2,6 @@
 - name: Azure Webserver Compute Configuration
   hosts: Ansible_webserver
   become: yes
-  user: jesbe
 
   tasks:
   - name: Install firewalld
