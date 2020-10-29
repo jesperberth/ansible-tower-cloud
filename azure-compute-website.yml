@@ -3,7 +3,7 @@
   hosts: Ansible_webserver
   become: yes
   user: jesbe
-  ansible_become_pass: "{{ vmpassword }}"
+  become_pass: "{{ vmpassword }}"
 
   tasks:
   - name: Download Website from Github
