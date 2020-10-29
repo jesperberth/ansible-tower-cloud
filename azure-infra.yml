@@ -114,6 +114,7 @@
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
       admin_username: jesbe
+      admin_password: "{{ vmpassword }}"
       network_interfaces: webserver1_nic01
       image:
         offer: CentOS
@@ -134,6 +135,7 @@
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
       admin_username: jesbe
+      admin_password: "{{ vmpassword }}"
       network_interfaces: webserver2_nic01
       image:
         offer: CentOS
