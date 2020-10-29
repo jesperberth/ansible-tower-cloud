@@ -5,8 +5,6 @@
     resourcegroup: "webserver"
     resourcegroupdns: "dnszones"
     location: "northeurope"
-    domain: azure.arrowdemo.dk
-    hostname: tomat
 
   tasks:
   - name: Get LB Public IP

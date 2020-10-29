@@ -5,9 +5,6 @@
   user: jesbe
   ansible_become_pass: "{{ vmpassword }}"
 
-  vars:
-    ansible_ssh_private_key_file: ~/.ssh/id_rsa
-    gitrepo: https://github.com/jesperberth/tomato-monkey.git
   tasks:
   - name: Download Website from Github
     git:
