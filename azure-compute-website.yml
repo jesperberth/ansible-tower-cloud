@@ -3,6 +3,8 @@
   hosts: Ansible_webserver
   become: yes
   user: jesbe
+  ansible_become_pass: "{{ vmpassword }}"
+
   vars:
     ansible_ssh_private_key_file: ~/.ssh/id_rsa
     gitrepo: https://github.com/jesperberth/tomato-monkey.git
