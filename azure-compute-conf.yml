@@ -3,8 +3,7 @@
   hosts: tag_ansible_webserver
   become: yes
   user: jesbe
-  vars:
-    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
   tasks:
   - name: Install firewalld
     yum:
