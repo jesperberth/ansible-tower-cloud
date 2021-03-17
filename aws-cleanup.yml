@@ -13,9 +13,9 @@
 
   tasks:
   - name: Get ec2 facts
-    ec2_instance_facts:
-    filters:
-      "tag: Ansible": webserver
+    community.aws.ec2_instance_info:
+      filters:
+        "tag:project": ansible
 
 #  - name: remove VPC
 #    ec2_vpc_net:
