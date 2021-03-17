@@ -16,7 +16,7 @@
     ec2_instance_info:
       region: "{{ region }}"
       filters:
-        "tag:project": ansible
+        "tag:Ansible": webserver
     register: ec2
 
   - name: Debug
