@@ -13,7 +13,7 @@
 
   tasks:
   - name: Get ec2 facts
-    community.aws.ec2_instance_info:
+    ec2_instance_info:
       filters:
         "tag:project": ansible
 
