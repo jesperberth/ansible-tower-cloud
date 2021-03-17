@@ -17,6 +17,11 @@
       region: "{{ region }}"
       filters:
         "tag:project": ansible
+    register: ec2
+
+  - name: Debug
+    debug:
+      var: ec2
 
 #  - name: remove VPC
 #    ec2_vpc_net:
