@@ -21,7 +21,7 @@
 
   - name: Debug
     debug:
-      msg: "{{ ec2['instances']['instance_id'] }}"
+      msg: "{{ ec2['instances'] }}"
 
 #  - name: remove VPC
 #    ec2_vpc_net:
