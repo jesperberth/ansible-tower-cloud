@@ -10,7 +10,7 @@
     cidr_public_b: "10.0.4.0/24"
     zone1: "a"
     zone2: "b"
-  
+
   tasks:
   - name: create VPC
     ec2_vpc_net:
@@ -20,7 +20,7 @@
       state: present
       tags:
         project: "{{ project_name }}"
-    register: network      
+    register: network
 
   - name: create subnet public_a
     ec2_vpc_subnet:
@@ -71,7 +71,7 @@
       tags:
         project: "{{ project_name }}"
       route_table_id: "{{ routea.route_tables[0].id }}"
-      subnets: 
+      subnets:
         - "{{ subnetpublica.subnet.id }}"
         - "{{ subnetpublicb.subnet.id }}"
       routes:
