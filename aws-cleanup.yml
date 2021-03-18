@@ -26,6 +26,14 @@
       - "{{ ec2['instances'][0].instance_id }}"
       - "{{ ec2['instances'][1].instance_id }}"
 
+  - name: Terminate ec2 instances
+    amazon.aws.ec2:
+      state: 'absent'
+      instance_ids: '{{ item }}'
+    loop:
+      - "{{ ec2['instances'][0].instance_id }}"
+      - "{{ ec2['instances'][1].instance_id }}"
+
 #  - name: remove VPC
 #    ec2_vpc_net:
 #      name: "{{ vpc_name }}"
