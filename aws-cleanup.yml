@@ -27,7 +27,7 @@
       - "{{ ec2['instances'][1].instance_id }}"
 
   - name: Terminate ec2 instances
-    amazon.aws.ec2:
+    ec2:
       state: 'absent'
       instance_ids: '{{ item }}'
     loop:
