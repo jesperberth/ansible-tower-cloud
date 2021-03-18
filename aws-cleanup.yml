@@ -38,6 +38,7 @@
   - name: Remove ELB
     ec2_elb_lb:
       name: "webserverelb"
+      region: "{{ region }}"
       state: absent
       wait: yes
 
