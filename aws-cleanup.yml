@@ -43,10 +43,10 @@
 
   - name: Debug
     debug:
-      msg: "{{ elb }}"
+      msg: "{{ elb[0].dns_name }}"
 
   - name: Remove ELB
-    ec2_elb_lb:
+    elb_application_lb:
       name: "webserverelb"
       region: "{{ region }}"
       state: absent
