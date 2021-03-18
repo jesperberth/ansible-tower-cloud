@@ -26,7 +26,6 @@
          "tag:Name": "{{ vpc_name }}"
     register: vpc
 
-
   - name: Terminate ec2 instances
     ec2:
       state: 'absent'
@@ -42,6 +41,7 @@
       region: "{{ region }}"
       state: absent
       wait: yes
+      purge_listeners: yes
 
   - name: Remove ELB Target Group
     elb_target_group:
