@@ -72,7 +72,7 @@
   - name: remove VPC
     ec2_vpc_net:
       name: "{{ vpc_name }}"
-     cidr_block: "{{ cidr }}"
-     region: "{{ region }}"
+      cidr_block: "{{ cidr }}"
+      region: "{{ region }}"
       state: absent
 
