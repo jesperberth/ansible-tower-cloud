@@ -35,6 +35,16 @@
       - "{{ ec2['instances'][0].instance_id }}"
       - "{{ ec2['instances'][1].instance_id }}"
 
+  - name: Get ELB DNS info
+    elb_application_lb_info:
+      names: "webserverelb"
+      region: "{{ region }}"
+    register: elb
+
+  - name: Debug
+    debug:
+      msg: "{{ elb }}"
+
   - name: Remove ELB
     ec2_elb_lb:
       name: "webserverelb"
@@ -43,15 +53,15 @@
       wait: yes
       purge_listeners: yes
 
-  - name: Remove ELB Target Group
-    elb_target_group:
-      name: webservers
-      region: "{{ region }}"
-      protocol: http
-      port: 80
-      vpc_id: "{{ vpc.vpcs[0].id }}"
-      state: absent
-      wait_timeout: 200
+#  - name: Remove ELB Target Group
+#    elb_target_group:
+#      name: webservers
+#      region: "{{ region }}"
+#      protocol: http
+#      port: 80
+#      vpc_id: "{{ vpc.vpcs[0].id }}"
+#      state: absent
+#      wait_timeout: 200
 
 
 
