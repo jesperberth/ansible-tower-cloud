@@ -29,6 +29,7 @@
   - name: Terminate ec2 instances
     ec2:
       state: 'absent'
+      region: "{{ region }}"
       instance_ids: '{{ item }}'
     loop:
       - "{{ ec2['instances'][0].instance_id }}"
