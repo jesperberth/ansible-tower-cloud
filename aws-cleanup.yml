@@ -43,7 +43,7 @@
 
   - name: Debug
     debug:
-      msg: "{{ elb.dns_name }}"
+      msg: "{{ elb[0] }}"
 
   - name: Remove ELB
     ec2_elb_lb:
@@ -51,6 +51,16 @@
       state: absent
       wait: yes
       wait_timeout: 600
+
+  - name: Remove Route53 record
+    route53:
+      state: absent
+      zone: "{{ domain }}"
+      record: "{{ hostname }}.{{ domain }}"
+      #type: A
+      #value: "{{ elb.load_balancers[0].dns_name }}"
+      #alias: True
+      #alias_hosted_zone_id: "{{ elb.load_balancers[0].canonical_hosted_zone_id }}"
 
 #  - name: Remove ELB Target Group
 #    elb_target_group:
