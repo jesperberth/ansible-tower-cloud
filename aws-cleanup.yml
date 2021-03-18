@@ -43,7 +43,7 @@
 
   - name: Debug
     debug:
-      msg: "{{ elb[0] }}"
+      msg: "{{ elb }}"
 
   - name: Remove ELB
     ec2_elb_lb:
