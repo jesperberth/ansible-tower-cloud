@@ -46,9 +46,10 @@
       msg: "{{ elb }}"
 
   - name: Remove ELB
-    ec2_elb_lb:
+    elb_application_lb:
       name: "webserverelb"
       state: absent
+      region: "{{ region }}"
       wait: yes
       wait_timeout: 600
 
