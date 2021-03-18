@@ -43,15 +43,14 @@
 
   - name: Debug
     debug:
-      msg: "{{ elb[0].dns_name }}"
+      msg: "{{ elb.dns_name }}"
 
   - name: Remove ELB
-    elb_application_lb:
+    ec2_elb_lb:
       name: "webserverelb"
-      region: "{{ region }}"
       state: absent
       wait: yes
-      purge_listeners: yes
+      wait_timeout: 600
 
 #  - name: Remove ELB Target Group
 #    elb_target_group:
