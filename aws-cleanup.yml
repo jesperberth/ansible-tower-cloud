@@ -35,6 +35,7 @@
     loop:
       - "{{ ec2['instances'][0].instance_id }}"
       - "{{ ec2['instances'][1].instance_id }}"
+    when: ec2['instances'][0].instance_id
 
   - name: Get ELB DNS info
     elb_application_lb_info:
