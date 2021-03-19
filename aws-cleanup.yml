@@ -17,6 +17,7 @@
       region: "{{ region }}"
       filters:
         "tag:Ansible": webserver
+        instance-state-name: [ "running" ]
     register: ec2
 
   - name: Get VPC info
@@ -68,6 +69,24 @@
       vpc_id: "{{ vpc.vpcs[0].id }}"
       state: absent
       wait_timeout: 200
+
+  - name: Gather information about any VPC route table within VPC
+    ec2_vpc_route_table_info:
+      filters:
+        vpc-id: "{{ vpc.vpcs[0].id }}"
+    register: routetable
+
+  - name: debug
+    debug:
+      msg: "{{ routetable }}"
+
+  - name: delete route table
+    ec2_vpc_route_table:
+      vpc_id: "{{ vpc.vpcs[0].id }}"
+      region: "{{ region }}"
+      route_table_id: "{{ route_table.id }}"
+      lookup: id
+      state: absent
 
   - name: remove VPC
     ec2_vpc_net:
