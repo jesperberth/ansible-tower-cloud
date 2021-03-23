@@ -81,7 +81,7 @@
 
   - name: debug
     debug:
-      msg: "{{ routetable }}"
+      msg: "{{ routetable.route_tables }}"
 
   - name: delete route table
     ec2_vpc_route_table:
