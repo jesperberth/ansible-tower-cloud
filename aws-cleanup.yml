@@ -92,8 +92,7 @@
       state: absent
       vpc_id: "{{ vpc.vpcs[0].id }}"
       cidr: "{{ item }}"
-    loop:
-      - "{{ subnet_cidr }}"
+    loop: "{{ subnet_cidr }}"
 
   - name: delete route table
     ec2_vpc_route_table:
