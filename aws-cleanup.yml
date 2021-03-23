@@ -64,7 +64,7 @@
       - "{{ ec2['instances'][1].instance_id }}"
     ignore_errors: yes
 
-  - name: remove Subnets
+#  - name: remove Subnets
 
   - name: Remove Route53 record
     route53:
