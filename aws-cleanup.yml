@@ -97,6 +97,7 @@
 
   - name: delete route table
     ec2_vpc_route_table:
+      region: "{{ region }}"
       vpc_id: "{{ vpc.vpcs[0].id }}"
       region: "{{ region }}"
       route_table_id: "{{ routetable.route_tables[0].id }}"
