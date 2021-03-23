@@ -87,7 +87,7 @@
     ec2_vpc_route_table:
       vpc_id: "{{ vpc.vpcs[0].id }}"
       region: "{{ region }}"
-      route_table_id: "{{ routetable.id }}"
+      route_table_id: "{{ routetable.route_tables.id }}"
       lookup: id
       state: absent
 
