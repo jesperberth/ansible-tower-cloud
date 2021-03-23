@@ -43,12 +43,16 @@
 
   - name: Get Subnets
     ec2_vpc_subnet_info:
-    filters:
-      vpc-id: "{{ vpc.vpcs[0].id }}"
+      filters:
+        vpc-id: "{{ vpc.vpcs[0].id }}"
     register: subnets
 
   - debug:
       var: "{{ subnets }}"
+
+  - name: Set Subnet cidr
+    set_fact:
+      subnet_cidr: "{{ subnets.subnets|map(attribute='cidr')|list }}"
 
   - name: Terminate ec2 instances
     ec2:
@@ -59,6 +63,8 @@
       - "{{ ec2['instances'][0].instance_id }}"
       - "{{ ec2['instances'][1].instance_id }}"
     ignore_errors: yes
+
+  - name: remove Subnets
 
   - name: Remove Route53 record
     route53:
