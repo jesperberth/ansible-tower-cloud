@@ -1,5 +1,5 @@
 ---
-- name: AWS Webserver Infrastructure
+- name: Remove AWS Webserver Infrastructure
   hosts: localhost
   vars:
     vpc_name: "webserver-vpc"
@@ -51,9 +51,9 @@
   - debug:
       var: "{{ subnets }}"
 
-  - name: Set Subnet cidr
+  - name: Set Subnet cidr_block
     set_fact:
-      subnet_cidr: "{{ subnets.subnets|map(attribute='cidr')|list }}"
+      subnet_cidr: "{{ subnets.subnets|map(attribute='cidr_block')|list }}"
 
   - name: Terminate ec2 instances
     ec2:
