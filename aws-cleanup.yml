@@ -73,6 +73,7 @@
 
   - name: Gather information about any VPC route table within VPC
     ec2_vpc_route_table_info:
+      region: "{{ region }}"
       filters:
         vpc-id: "{{ vpc.vpcs[0].id }}"
     register: routetable
