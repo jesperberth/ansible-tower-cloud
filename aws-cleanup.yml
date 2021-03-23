@@ -12,6 +12,20 @@
     zone2: "b"
 
   tasks:
+  - name: Get ELB DNS info
+    elb_application_lb_info:
+      names: "webserverelb"
+      region: "{{ region }}"
+    register: elb
+
+  - name: Remove ELB
+    elb_application_lb:
+      name: "webserverelb"
+      state: absent
+      region: "{{ region }}"
+      wait: yes
+      wait_timeout: 600
+
   - name: Get ec2 facts
     ec2_instance_info:
       region: "{{ region }}"
@@ -27,6 +41,15 @@
          "tag:Name": "{{ vpc_name }}"
     register: vpc
 
+  - name: Get Subnets
+    ec2_vpc_subnet_info:
+    filters:
+      vpc-id: "{{ vpc.vpcs[0].id }}"
+    register: subnets
+
+  - debug:
+      var: "{{ subnets }}"
+
   - name: Terminate ec2 instances
     ec2:
       state: 'absent'
@@ -36,20 +59,6 @@
       - "{{ ec2['instances'][0].instance_id }}"
       - "{{ ec2['instances'][1].instance_id }}"
     ignore_errors: yes
-
-  - name: Get ELB DNS info
-    elb_application_lb_info:
-      names: "webserverelb"
-      region: "{{ region }}"
-    register: elb
-
-  - name: Remove ELB
-    elb_application_lb:
-      name: "webserverelb"
-      state: absent
-      region: "{{ region }}"
-      wait: yes
-      wait_timeout: 600
 
   - name: Remove Route53 record
     route53:
@@ -61,16 +70,6 @@
       alias: True
       alias_hosted_zone_id: "{{ elb.load_balancers[0].canonical_hosted_zone_id }}"
     ignore_errors: yes
-
-  - name: Remove ELB Target Group
-    elb_target_group:
-      name: webservers
-      region: "{{ region }}"
-      protocol: http
-      port: 80
-      vpc_id: "{{ vpc.vpcs[0].id }}"
-      state: absent
-      wait_timeout: 200
 
   - name: Gather VPC route table
     ec2_vpc_route_table_info:
@@ -99,6 +98,21 @@
   - name: debug
     debug:
       msg: "{{ igw_info }}"
+
+#  - name: delete vpc internet gateway
+#    ec2_vpc_igw:
+#      region: "{{ region }}"
+#      vpc_id: "{{ vpc.vpcs[0].id }}"
+#      state: absent
+  - name: Remove ELB Target Group
+    elb_target_group:
+      name: webservers
+      region: "{{ region }}"
+      protocol: http
+      port: 80
+      vpc_id: "{{ vpc.vpcs[0].id }}"
+      state: absent
+      wait_timeout: 200
 
   - name: remove VPC
     ec2_vpc_net:
