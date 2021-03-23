@@ -65,8 +65,6 @@
       - "{{ ec2['instances'][1].instance_id }}"
     ignore_errors: yes
 
-#  - name: remove Subnets
-
   - name: Remove Route53 record
     route53:
       state: absent
@@ -88,6 +86,14 @@
   - name: debug
     debug:
       msg: "{{ routetable.route_tables[0].id }}"
+
+  - name: remove Subnets
+    ec2_vpc_subnet:
+      state: absent
+      vpc_id: "{{ vpc.vpcs[0].id }}"
+      cidr: "{{ item }}"
+    loop:
+      - "{{ subnet_cidr }}"
 
   - name: delete route table
     ec2_vpc_route_table:
