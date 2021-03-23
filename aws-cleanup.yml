@@ -72,7 +72,7 @@
       state: absent
       wait_timeout: 200
 
-  - name: Gather information about any VPC route table within VPC
+  - name: Gather VPC route table
     ec2_vpc_route_table_info:
       region: "{{ region }}"
       filters:
@@ -90,6 +90,15 @@
       route_table_id: "{{ routetable.route_tables[0].id }}"
       lookup: id
       state: absent
+
+  - name: Gather Internet Gateways
+    community.aws.ec2_vpc_igw_info:
+      region: "{{ region }}"
+    register: igw_info
+
+  - name: debug
+    debug:
+      msg: "{{ igw_info }}"
 
   - name: remove VPC
     ec2_vpc_net:
