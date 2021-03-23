@@ -92,7 +92,7 @@
       state: absent
 
   - name: Gather Internet Gateways
-    community.aws.ec2_vpc_igw_info:
+    ec2_vpc_igw_info:
       region: "{{ region }}"
     register: igw_info
 
