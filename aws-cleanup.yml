@@ -43,6 +43,7 @@
 
   - name: Get Subnets
     ec2_vpc_subnet_info:
+      region: "{{ region }}"
       filters:
         vpc-id: "{{ vpc.vpcs[0].id }}"
     register: subnets
