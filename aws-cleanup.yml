@@ -97,6 +97,16 @@
       cidr: "{{ item }}"
     loop: "{{ subnet_cidr }}"
 
+  - name: debug
+    debug:
+      msg: "{{ igw_info }}"
+
+  - name: Delete vpc internet gateway
+    ec2_vpc_igw:
+      region: "{{ region }}"
+      vpc_id: "{{ vpc.vpcs[0].id }}"
+      state: absent
+
   - name: Delete route table
     ec2_vpc_route_table:
       vpc_id: "{{ vpc.vpcs[0].id }}"
@@ -104,16 +114,6 @@
       route_table_id: "{{ routetable.route_tables[0].id }}"
       lookup: id
       state: absent
-
-  - name: debug
-    debug:
-      msg: "{{ igw_info }}"
-
-#  - name: Delete vpc internet gateway
-#    ec2_vpc_igw:
-#      region: "{{ region }}"
-#      vpc_id: "{{ vpc.vpcs[0].id }}"
-#      state: absent
 
   - name: Delete ELB Target Group
     elb_target_group:
