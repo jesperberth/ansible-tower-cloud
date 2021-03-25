@@ -12,7 +12,7 @@
       name: "{{ resourcegroup }}"
       location: "{{ location }}"
       force_delete_nonempty: yes
-      state: absen
+      state: absent
 
   - name: Remove A record for Loadbalancer
     azure_rm_dnsrecordset:
