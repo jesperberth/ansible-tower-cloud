@@ -99,14 +99,6 @@
       vpc_id: "{{ vpc.vpcs[0].id }}"
       state: absent
 
-#  - name: Delete route table
-#    ec2_vpc_route_table:
-#      vpc_id: "{{ vpc.vpcs[0].id }}"
-#      region: "{{ region }}"
-#      route_table_id: "{{ routetable.route_tables[0].id }}"
-#      lookup: id
-#      state: absent
-
   - name: Delete ELB Target Group
     elb_target_group:
       name: webservers
