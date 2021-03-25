@@ -111,6 +111,6 @@
   - name: Delete VPC
     ec2_vpc_net:
       name: "{{ vpc_name }}"
-      cidr_block: "{{ cidr }}"
+      cidr_block: "{{ vpc.vpcs[0].cidr_block }}"
       region: "{{ region }}"
       state: absent
