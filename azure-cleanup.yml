@@ -3,7 +3,7 @@
   hosts: localhost
   vars:
     resourcegroup: "webserver"
-    resourcegroupdns: "dnszones"
+    resourcegroupdns: "DNSzones"
     location: "northeurope"
 
   tasks:
