@@ -109,12 +109,13 @@
     debug:
       msg: "{{ igw_info }}"
 
-#  - name: delete vpc internet gateway
+#  - name: Delete vpc internet gateway
 #    ec2_vpc_igw:
 #      region: "{{ region }}"
 #      vpc_id: "{{ vpc.vpcs[0].id }}"
 #      state: absent
-  - name: Remove ELB Target Group
+
+  - name: Delete ELB Target Group
     elb_target_group:
       name: webservers
       region: "{{ region }}"
@@ -124,7 +125,7 @@
       state: absent
       wait_timeout: 200
 
-  - name: remove VPC
+  - name: Delete VPC
     ec2_vpc_net:
       name: "{{ vpc_name }}"
       cidr_block: "{{ cidr }}"
