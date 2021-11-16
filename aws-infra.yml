@@ -123,3 +123,7 @@
       instance_tags:
         Name: webserver2
         Ansible: webserver
+
+  - name: Pause for 1 minute
+    pause:
+      minutes: 1
