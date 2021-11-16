@@ -83,7 +83,7 @@
     oci_ad_facts:
       compartment_id: "{{ compartmentid }}"
     register: adfact
-  
+
   - name: Create Webservers
     oci_instance:
       name: "{{ hostname }}-{{ item }}"
@@ -92,17 +92,17 @@
       compartment_id: "{{ compartmentid }}"
       shape: "VM.Standard.E2.1"
       freeform_tags:
-         ansible: "website"
+          ansible: "website"
       source_details:
-         source_type: image
-         image_id: "{{ image.images[0].id }}"
+          source_type: image
+          image_id: "{{ image.images[0].id }}"
       vnic:
-         hostname_label: "{{ hostname }}-{{ item }}"
-         assign_public_ip: true
-         subnet_id: "{{ subnet_id }}"
+          hostname_label: "{{ hostname }}-{{ item }}"
+          assign_public_ip: true
+          subnet_id: "{{ subnet_id }}"
     loop:
-       - "webserver1"
-       - "webserver2"
+        - "webserver1"
+        - "webserver2"
     async: 1000
     poll: 0
     register: create_vm

@@ -12,13 +12,13 @@
     availabilityset: "webserver_avail"
     webserver_nsg: "webserver_nsg"
     domain_sub: "web"
-  
+
   tasks:
   - name: create Resource Group
     azure_rm_resourcegroup:
       name: "{{ resourcegroup }}"
       location: "{{ location }}"
-  
+
   - name: Create a virtual network
     azure_rm_virtualnetwork:
       resource_group: "{{ resourcegroup }}"
@@ -123,7 +123,6 @@
         version: latest
       tags:
           Ansible: "webserver"
-        
 
   - name: Create Webserver2 VM
     azure_rm_virtualmachine:
