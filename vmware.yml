@@ -5,7 +5,7 @@
 
   tasks:
 - name: Gather disk info from virtual machine using name
-  community.vmware.vmware_guest_disk_info:
+  vmware_guest_disk_info:
     datacenter: Datacenter
     name: dc01.redhat.local
   delegate_to: localhost
