@@ -4,8 +4,9 @@
   vars:
 
   tasks:
-  - name: Look up the VM called test_vm1 in the inventory
-    vmware.vmware_rest.vcenter_vm_info:
-      filter_names:
-      - dc01.redhat.local
-    register: search_result
+- name: Gather disk info from virtual machine using name
+  community.vmware.vmware_guest_disk_info:
+    datacenter: Datacenter
+    name: dc01.redhat.local
+  delegate_to: localhost
+  register: disk_info
