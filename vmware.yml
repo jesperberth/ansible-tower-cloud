@@ -4,9 +4,24 @@
   vars:
 
   tasks:
-  - name: Gather disk info from virtual machine using name
+  - name: Gather vm info from virtual machine
+    vmware_guest_info:
+      datacenter: Datacenter
+      name: dc01.redhat.local
+    delegate_to: localhost
+    register: vm_info
+
+  - name: Show VM info
+    debug:
+      msg: "{{ vm_info }}"
+
+  - name: Gather disk info from virtual machine
     vmware_guest_disk_info:
       datacenter: Datacenter
       name: dc01.redhat.local
     delegate_to: localhost
     register: disk_info
+
+  - name: Show VM Disk info
+    debug:
+      msg: "{{ disk_info }}"
