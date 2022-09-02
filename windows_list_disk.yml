@@ -5,7 +5,7 @@
 
   tasks:
   - name: Get disk facts
-    community.windows.win_disk_facts:
+    win_disk_facts:
 
   - name: Output first disk size
     debug:
