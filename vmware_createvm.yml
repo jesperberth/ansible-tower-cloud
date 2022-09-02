@@ -1,0 +1,33 @@
+---
+- name: Create a VM from a template
+  hosts: localhost
+  gather_facts: no
+  vars:
+    vmname: server01
+    template: "_TEMP_Windows_Server_2019_november_2018"
+    datastore: "Storage1_hdd1"
+    vmnetwork: "125 - redhat.local"
+    folder: "redhat"
+
+  tasks:
+  - name: Create VM from template
+    vmware_guest:
+      validate_certs: False
+      name: "{{ vmname }}"
+      template: "{{ template }}"
+      disk:
+        - size_gb: 70
+          type: thin
+          datastore: "{{ datastore }}"
+      networks:
+        - name: "{{ vmnetwork }}"
+      datacenter: Datacenter
+      folder: "{{ folder }}"
+      state: poweredon
+      cluster: Cluster01
+      wait_for_ip_address: yes
+    register: newvm
+
+  - name: IP Info
+    debug:
+      msg: "{{ newvm.instance.ipv4 }}"
