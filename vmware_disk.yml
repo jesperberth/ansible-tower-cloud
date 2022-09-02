@@ -2,12 +2,14 @@
 - name: Vmware
   hosts: localhost
   vars:
+    vmname: server01
+    datastore: "Storage1_hdd1"
 
   tasks:
   - name: Gather vm info from virtual machine
     vmware_guest_info:
       datacenter: Datacenter
-      name: dc01.redhat.local
+      name: "{{ vmname }}"
     delegate_to: localhost
     register: vm_info
 
@@ -18,10 +20,29 @@
   - name: Gather disk info from virtual machine
     vmware_guest_disk_info:
       datacenter: Datacenter
-      name: dc01.redhat.local
+      name: "{{ vmname }}"
     delegate_to: localhost
     register: disk_info
 
   - name: Show VM Disk info
     debug:
       msg: "{{ disk_info }}"
+
+  - name: Add disks to virtual machine
+    community.vmware.vmware_guest_disk:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      datacenter: "{{ datacenter_name }}"
+      name: "{{ vmname }}"
+      disk:
+        - size_mb: 10000
+          type: thin
+          datastore: "{{ datastore }}"
+          state: present
+          scsi_controller: 0
+          unit_number: 1
+          scsi_type: 'paravirtual'
+          disk_mode: 'persistent'
+    delegate_to: localhost
+    register: disk_facts
