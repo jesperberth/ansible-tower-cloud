@@ -1,6 +1,6 @@
 
 ---
-- hosts: server01
+- hosts: server01_4213c23e-52c2-88f4-949b-e95bf6832316
   vars:
 
   tasks:
