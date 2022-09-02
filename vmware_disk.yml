@@ -31,6 +31,7 @@
   - name: Add disks to virtual machine
     vmware_guest_disk:
       name: "{{ vmname }}"
+      datacenter: Datacenter
       disk:
         - size_mb: 10000
           type: thin
