@@ -29,7 +29,7 @@
       msg: "{{ disk_info }}"
 
   - name: Add disks to virtual machine
-    community.vmware.vmware_guest_disk:
+    vmware_guest_disk:
       name: "{{ vmname }}"
       disk:
         - size_mb: 10000
