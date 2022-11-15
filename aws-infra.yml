@@ -98,7 +98,7 @@
 
   - name: Create Webserver1
     ec2:
-      key_name: ansible-key
+      key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
       image: ami-04d5cc9b88f9d1d39
@@ -112,7 +112,7 @@
 
   - name: Create Webserver2
     ec2:
-      key_name: ansible-key
+      key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
       image: ami-04d5cc9b88f9d1d39
