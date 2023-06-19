@@ -41,6 +41,7 @@
       port: 80
       vpc_id: "{{ vpc.vpcs[0].id }}"
       health_check_path: /
+      health_check_protocol: http
       successful_response_codes: "200,250-260"
       targets:
         - Id: "{{ ec2.instances[0].instance_id }}"
