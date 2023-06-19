@@ -3,7 +3,6 @@
   hosts: localhost
   vars:
     resourcegroup: "webserver"
-    resourcegroupdns: "DNSzones"
     location: "northeurope"
 
   tasks:
@@ -12,12 +11,4 @@
       name: "{{ resourcegroup }}"
       location: "{{ location }}"
       force_delete_nonempty: yes
-      state: absent
-
-  - name: Remove A record for Loadbalancer
-    azure_rm_dnsrecordset:
-      resource_group: "{{ resourcegroupdns }}"
-      relative_name: "{{ hostname }}"
-      zone_name: "{{ domain }}"
-      record_type: A
       state: absent
