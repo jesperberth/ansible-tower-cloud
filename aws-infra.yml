@@ -97,7 +97,7 @@
           rule_desc: allow all ssh
 
   - name: Create Webserver1
-    amazon.aws.ec2:
+    amazon.aws.ec2_instance:
       key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
@@ -111,7 +111,7 @@
         Ansible: webserver
 
   - name: Create Webserver2
-    amazon.aws.ec2:
+    amazon.aws.ec2_instance:
       key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
