@@ -103,10 +103,12 @@
       instance_type: t2.micro
       image_id: ami-0b54418bdd76353ce
       wait: yes
-      group: default
-      vpc_subnet_id: "{{ subnetpublica.subnet.id }}"
-      assign_public_ip: yes
-      instance_tags:
+      security_group: default
+      vpc_subnet_id: "{{ subnetpublicb.subnet.id }}"
+      network:
+          assign_public_ip: true
+      state: running
+      tags:
         Name: webserver1
         Ansible: webserver
 
@@ -117,10 +119,12 @@
       instance_type: t2.micro
       image_id: ami-0b54418bdd76353ce
       wait: yes
-      group: default
+      security_group: default
       vpc_subnet_id: "{{ subnetpublicb.subnet.id }}"
-      assign_public_ip: yes
-      instance_tags:
+      network:
+          assign_public_ip: true
+      state: running
+      tags:
         Name: webserver2
         Ansible: webserver
 
