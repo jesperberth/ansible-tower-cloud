@@ -36,7 +36,7 @@
           backend_port: 80
           probe: prob0
     register: lb
-    
+
   - name: Update network interface for webserver1
     azure_rm_networkinterface:
       name: "webserver1_nic01"

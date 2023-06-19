@@ -4,6 +4,7 @@
   vars:
     resourcegroup: "webserver"
     location: "northeurope"
+    user: azureuser
     virtualnetwork_name: "webserver-net"
     project_name: "ansible"
     cidr: "10.0.0.0/16"
@@ -116,7 +117,7 @@
             key_data: "{{ ssh_public_key }}"
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
-      admin_username: azureuser
+      admin_username: {{ user }}
       network_interfaces: webserver1_nic01
       image:
         offer: CentOS
@@ -132,10 +133,13 @@
       name: webserver2
       vm_size: Standard_A1_v2
       os_type: Linux
-      ssh_password_enabled: true
+      ssh_password_enabled: false
+      ssh_public_keys:
+          - path: "/home/{{ user }}/.ssh/authorized_keys"
+            key_data: "{{ ssh_public_key }}"
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
-      admin_username: jesbe
+      admin_username: {{ user }}
       admin_password: "{{ vmpassword }}"
       network_interfaces: webserver2_nic01
       image:
