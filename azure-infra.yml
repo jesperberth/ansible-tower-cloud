@@ -4,7 +4,7 @@
   vars:
     resourcegroup: "webserver"
     location: "northeurope"
-    user: azureuser
+    user: "azureuser"
     virtualnetwork_name: "webserver-net"
     project_name: "ansible"
     cidr: "10.0.0.0/16"
