@@ -70,7 +70,7 @@
       resource_group: "{{ resourcegroup }}"
       name: public_ip_webserver1
       allocation_method: static
-      domain_name: "webserver1{{ domain_sub }}"
+      #domain_name: "webserver1{{ domain_sub }}"
     register: webserver1_pub_ip
 
   - name: Create a public ip address for webserver2
@@ -78,7 +78,7 @@
       resource_group: "{{ resourcegroup }}"
       name: public_ip_webserver2
       allocation_method: static
-      domain_name: "webserver2{{ domain_sub }}"
+      #domain_name: "webserver2{{ domain_sub }}"
     register: webserver2_pub_ip
 
   - name: Create a network interface for webserver1
