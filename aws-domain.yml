@@ -3,7 +3,7 @@
   hosts: localhost
   vars:
     region: "eu-west-1"
-  
+
   tasks:
   - name: Get ELB DNS info
     elb_application_lb_info:
