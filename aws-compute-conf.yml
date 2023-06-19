@@ -7,10 +7,8 @@
     - name: Install Software
       ansible.builtin.yum:
         name:
-          - firewalld
           - httpd
           - git
-          - python-firewall
         state: present
 
     - name: Enable and start httpd
@@ -19,21 +17,21 @@
         state: started
         enabled: true
 
-    - name: Enable SSH in firewall
-      ansible.posix.firewalld:
-        zone: public
-        service: ssh
-        permanent: true
-        state: enabled
-      notify: Reload firewall
+    # - name: Enable SSH in firewall
+    #   ansible.posix.firewalld:
+    #     zone: public
+    #     service: ssh
+    #     permanent: true
+    #     state: enabled
+    #   notify: Reload firewall
 
-    - name: Enable http in firewall
-      ansible.posix.firewalld:
-        zone: public
-        service: http
-        permanent: true
-        state: enabled
-      notify: Reload firewall
+    # - name: Enable http in firewall
+    #   ansible.posix.firewalld:
+    #     zone: public
+    #     service: http
+    #     permanent: true
+    #     state: enabled
+    #   notify: Reload firewall
 
   handlers:
     - name: Reload firewall
