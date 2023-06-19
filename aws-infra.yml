@@ -101,7 +101,7 @@
       key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
-      image_id: ami-0b54418bdd76353ce
+      image_id: ami-022e1a32d3f742bd8
       wait: yes
       security_group: default
       vpc_subnet_id: "{{ subnetpublicb.subnet.id }}"
@@ -117,7 +117,7 @@
       key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
-      image_id: ami-0b54418bdd76353ce
+      image_id: ami-022e1a32d3f742bd8
       wait: yes
       security_group: default
       vpc_subnet_id: "{{ subnetpublicb.subnet.id }}"
