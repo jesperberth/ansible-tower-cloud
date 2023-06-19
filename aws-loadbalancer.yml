@@ -34,7 +34,7 @@
       msg: "{{ ec2 }}"
 
   - name: Create ELB Target Group
-    amazon.aws.elb_target_group:
+    community.aws.elb_target_group:
       name: webservers
       region: "{{ region }}"
       protocol: http
