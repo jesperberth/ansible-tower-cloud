@@ -10,6 +10,7 @@
           - firewalld
           - httpd
           - git
+          - python-firewall
         state: present
 
     - name: Enable and start httpd
