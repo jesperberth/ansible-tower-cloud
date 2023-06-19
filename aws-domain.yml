@@ -17,6 +17,7 @@
       zone: "{{ domain }}"
       record: "{{ hostname }}.{{ domain }}"
       type: A
+      overwrite: true
       value: "{{ elb.load_balancers[0].dns_name }}"
       alias: True
       alias_hosted_zone_id: "{{ elb.load_balancers[0].canonical_hosted_zone_id }}"
