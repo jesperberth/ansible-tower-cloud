@@ -1,10 +1,10 @@
 ---
-- name: Azure Webserver Compute Configuration
+- name: AWS Webserver Compute Configuration
   hosts: tag_Ansible_webserver
   become: true
 
   tasks:
-    - name: Install firewalld
+    - name: Install Software
       ansible.builtin.yum:
         name:
           - firewalld
