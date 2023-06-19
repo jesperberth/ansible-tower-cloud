@@ -6,13 +6,13 @@
 
   tasks:
   - name: Get ELB DNS info
-    elb_application_lb_info:
+    amazon.aws.elb_application_lb_info:
       names: "webserverelb"
       region: "{{ region }}"
     register: elb
 
   - name: Create Route53 record
-    route53:
+    amazon.aws.route53:
       state: present
       zone: "{{ domain }}"
       record: "{{ hostname }}.{{ domain }}"
