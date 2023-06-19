@@ -117,7 +117,7 @@
             key_data: "{{ ssh_public_key }}"
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
-      admin_username: {{ user }}
+      admin_username: "{{ user }}"
       network_interfaces: webserver1_nic01
       image:
         offer: CentOS
@@ -139,7 +139,7 @@
             key_data: "{{ ssh_public_key }}"
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
-      admin_username: {{ user }}
+      admin_username: "{{ user }}"
       admin_password: "{{ vmpassword }}"
       network_interfaces: webserver2_nic01
       image:
