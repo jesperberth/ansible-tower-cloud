@@ -110,11 +110,13 @@
       name: webserver1
       vm_size: Standard_A1_v2
       os_type: Linux
-      ssh_password_enabled: true
+      ssh_password_enabled: false
+      ssh_public_keys:
+          - path: "/home/{{ user }}/.ssh/authorized_keys"
+            key_data: "{{ ssh_public_key }}"
       availability_set: "{{ availabilityset }}"
       managed_disk_type: Standard_LRS
-      admin_username: jesbe
-      admin_password: "{{ vmpassword }}"
+      admin_username: azureuser
       network_interfaces: webserver1_nic01
       image:
         offer: CentOS

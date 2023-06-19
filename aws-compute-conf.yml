@@ -1,49 +1,51 @@
 ---
 - name: AWS Webserver Compute Configuration
-  hosts: tag_Ansible_webserver
-  become: yes
-  user: ec2-user
+  hosts: webservers
+  become: true
+
   vars:
+    user: ec2-user
+
   tasks:
-  - name: Install firewalld
-    yum:
-      name: firewalld
-      state: latest
+    - name: Install firewalld
+      ansible.builtin.yum:
+        name: firewalld
+        state: present
 
-  - name: Install httpd
-    yum:
-      name: httpd
-      state: latest
+    - name: Install httpd
+      ansible.builtin.yum:
+        name: httpd
+        state: present
 
-  - name: Install git
-    yum:
-      name: git
-      state: latest
+    - name: Install git
+      ansible.builtin.yum:
+        name: git
+        state: present
 
-  - name: Enable and start httpd
-    systemd:
-      name: httpd
-      state: started
-      enabled: yes
+    - name: Enable and start httpd
+      ansible.builtin.systemd:
+        name: httpd
+        state: started
+        enabled: true
 
-  - name: Enable SSH in firewall
-    firewalld:
-      zone: public
-      service: ssh
-      permanent: yes
-      state: enabled
-    notify: reload firewall
+    - name: Enable SSH in firewall
+      ansible.posix.firewalld:
+        zone: public
+        service: ssh
+        permanent: true
+        state: enabled
+      notify: reload firewall
 
-  - name: Enable http in firewall
-    firewalld:
-      zone: public
-      service: http
-      permanent: yes
-      state: enabled
-    notify: reload firewall
+    - name: Enable http in firewall
+      ansible.posix.firewalld:
+        zone: public
+        service: http
+        permanent: true
+        state: enabled
+      notify: Reload firewall
 
   handlers:
-  - name: reload firewall
-    systemd:
-      name: firewalld
-      state: reloaded
+    - name: Reload firewall
+      ansible.builtin.systemd:
+        name: firewalld
+        state: reloaded
