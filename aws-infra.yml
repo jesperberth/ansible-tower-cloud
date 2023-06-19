@@ -13,7 +13,7 @@
 
   tasks:
   - name: create VPC
-    ec2_vpc_net:
+    amazon.aws.ec2_vpc_net:
       name: "{{ vpc_name }}"
       cidr_block: "{{ cidr }}"
       region: "{{ region }}"
@@ -23,7 +23,7 @@
     register: network
 
   - name: create subnet public_a
-    ec2_vpc_subnet:
+    amazon.aws.ec2_vpc_subnet:
       region: "{{ region }}"
       state: present
       cidr: "{{ cidr_public_a }}"
@@ -35,7 +35,7 @@
     register: subnetpublica
 
   - name: create subnet public_b
-    ec2_vpc_subnet:
+    amazon.aws.ec2_vpc_subnet:
       region: "{{ region }}"
       state: present
       cidr: "{{ cidr_public_b }}"
@@ -47,7 +47,7 @@
     register: subnetpublicb
 
   - name: vpc internet gateway
-    ec2_vpc_igw:
+    amazon.aws.ec2_vpc_igw:
       region: "{{ region }}"
       vpc_id: "{{ network.vpc.id }}"
       state: present
@@ -63,7 +63,7 @@
     register: routea
 
   - name: Setup route tables public az a
-    ec2_vpc_route_table:
+    amazon.aws.ec2_vpc_route_table:
       region: "{{ region }}"
       vpc_id: "{{ network.vpc.id }}"
       lookup: id
@@ -79,7 +79,7 @@
           gateway_id: "{{ igw.gateway_id }}"
 
   - name: Set Security Group for VPC
-    ec2_group:
+    amazon.aws.ec2_group:
       name: default
       description: default VPC security group
       vpc_id: "{{ network.vpc.id }}"
@@ -97,7 +97,7 @@
           rule_desc: allow all ssh
 
   - name: Create Webserver1
-    ec2:
+    amazon.aws.ec2:
       key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
@@ -111,7 +111,7 @@
         Ansible: webserver
 
   - name: Create Webserver2
-    ec2:
+    amazon.aws.ec2:
       key_name: ansible-tower-key
       region: "{{ region }}"
       instance_type: t2.micro
